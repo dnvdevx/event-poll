@@ -33,7 +33,7 @@ export async function POST(req) {
   }
 
   const activeId = await redis.get("poll:active");
-  if (activeId !== id) {
+  if (String(activeId) !== String(id)) {
     return NextResponse.json({ error: "question not active" }, { status: 400 });
   }
 
