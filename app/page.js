@@ -43,7 +43,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#3d0a0a] to-[#7a1414] text-white flex flex-col items-center justify-center p-4 md:p-10">
+    <div className="min-h-screen bg-gradient-to-b from-[#3d0a0a] to-[#7a1414] text-white flex flex-col items-center justify-start p-4 md:p-10 pt-6 md:pt-10">
       <div className="w-full max-w-3xl px-2">
         <div className="flex justify-between items-center mb-8 md:mb-12">
           <img src="/logo.png" alt="Thanima" className="h-14 md:h-20 lg:h-24" />
