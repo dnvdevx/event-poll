@@ -8,12 +8,17 @@ const COLORS = ["#eab676", "#f5d98a", "#c2410c", "#facc15"];
 export default function Results() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [eventName, setEventName] = useState("");
 
   async function load() {
     const res = await fetch("/api/results", { cache: "no-store" });
     const json = await res.json();
     setData(json.active);
     setLoading(false);
+
+    const nameRes = await fetch("/api/event-name", { cache: "no-store" });
+    const nameData = await nameRes.json();
+    setEventName(nameData.eventName || "");
   }
 
   useEffect(() => {
@@ -25,20 +30,28 @@ export default function Results() {
 return (
     <div className="min-h-screen bg-gradient-to-b from-[#3d0a0a] to-[#7a1414] text-white flex flex-col items-center p-6">
       <div className="w-full max-w-3xl px-2">
-        <div className="flex justify-between items-center mb-10 mt-4">
-          <h1 className="text-xl font-bold tracking-tight flex items-center gap-2 text-[#f5d98a]">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f5d98a] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#f5d98a]"></span>
-            </span>
-            Live Results
-          </h1>
+        <div className="flex justify-between items-center mb-6 mt-4">
+          <img src="/logo.png" alt="Thanima" className="h-14 md:h-20 lg:h-24" />
           <Link
             href="/"
             className="text-sm bg-[#f5d98a]/10 hover:bg-[#f5d98a]/20 border border-[#f5d98a]/30 px-4 py-2 rounded-full transition text-[#f5d98a]"
           >
             ← Back to Vote
           </Link>
+        </div>
+
+        {eventName && (
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-center mb-8 md:mb-12 text-[#f5d98a]">
+            {eventName}
+          </h1>
+        )}
+
+        <div className="flex items-center justify-center gap-2 mb-6">
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f5d98a] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#f5d98a]"></span>
+          </span>
+          <span className="text-sm uppercase tracking-widest text-[#f5d98a]/80">Live</span>
         </div>
 
         {loading && (
@@ -74,7 +87,7 @@ return (
                   <div key={i}>
                     <div className="flex justify-between mb-1.5 text-sm md:text-lg">
                       <span className="font-medium">{choice}</span>
-                      <span className="text-gray-400">
+                      <span className="text-gray-400 transition-all duration-300">
                         {count} · {pct}%
                       </span>
                     </div>
