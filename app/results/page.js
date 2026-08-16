@@ -136,12 +136,12 @@ export default function Results() {
                           {isWinner && (
                             <div
                               className="pointer-events-none absolute left-1/2 z-20 flex -translate-x-1/2 items-center justify-center"
-                              style={{ bottom: `calc(${barHeight}% + 24px)` }}
+                              style={{ bottom: `calc(${barHeight}% + 27px)` }}
                             >
                               <img
                                 src={TIGER_FRAMES[winnerFrame]}
                                 alt="Winner tiger celebration"
-                                className="h-28 w-auto object-contain drop-shadow-[0_0_16px_rgba(245,217,138,0.86)] md:h-32"
+                                className="h-20 w-auto object-contain drop-shadow-[0_0_6px_rgba(245,217,138,0.22)] md:h-24"
                               />
                             </div>
                           )}
@@ -152,21 +152,20 @@ export default function Results() {
                               height: `${barHeight}%`,
                               background: `linear-gradient(180deg, ${COLORS[i % COLORS.length]} 0%, ${COLORS[i % COLORS.length]}cc 100%)`,
                               boxShadow: isWinner
-                                ? `0 0 28px ${COLORS[i % COLORS.length]}99, 0 12px 28px rgba(0,0,0,0.2)`
-                                : `0 0 20px ${COLORS[i % COLORS.length]}66`,
-                              transition: 'height 1.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s ease, transform 0.6s ease',
-                              transform: isWinner ? 'translateY(-2px)' : 'translateY(0)',
+                                ? `0 0 10px ${COLORS[i % COLORS.length]}55, 0 10px 18px rgba(0,0,0,0.18)`
+                                : `0 0 8px ${COLORS[i % COLORS.length]}44`,
+                              transition: 'height 1.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease, transform 0.5s ease',
+                              transform: isWinner ? 'translateY(-1px)' : 'translateY(0)',
                             }}
                           >
-                            <span className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-full border border-[#f5d98a]/20 bg-[#3d0a0a]/80 px-2 py-1 text-[11px] font-bold text-[#f5d98a] md:text-xs">
-                              {pct}%
-                            </span>
-
-                            {isWinner && (
-                              <span className="absolute -right-2 -top-2 rounded-full border border-[#f5d98a]/30 bg-[#3d0a0a]/90 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[#f5d98a]">
-                                LEAD
-                              </span>
-                            )}
+                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full border border-[#f5d98a]/20 bg-[#3d0a0a]/80 px-2 py-1 text-[11px] font-bold text-[#f5d98a] md:text-xs">
+                              <span>{pct}%</span>
+                              {isWinner && (
+                                <span className="rounded-full border border-[#f5d98a]/30 bg-[#3d0a0a]/90 px-1 py-0.5 text-[8px] font-bold uppercase tracking-[0.15em] text-[#f5d98a]">
+                                  LEAD
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
 
