@@ -47,7 +47,6 @@ return (
 
         {!loading && !data && (
           <div className="text-center py-20">
-            <p className="text-2xl mb-2">📭</p>
             <p className="text-gray-400">No poll is live right now.</p>
           </div>
         )}
