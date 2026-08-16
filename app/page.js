@@ -67,7 +67,6 @@ export default function Home() {
 
         {!loading && !active && (
           <div className="text-center py-20">
-            <p className="text-2xl mb-2">📭</p>
             <p className="text-[#f5d98a]/70">No poll is live right now.</p>
             <p className="text-gray-600 text-sm mt-1">Check back soon!</p>
           </div>
