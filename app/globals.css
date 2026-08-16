@@ -39,3 +39,32 @@ body {
     }
   }
 }
+
+@keyframes winnerFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.72) rotate(0deg);
+  }
+  18% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.04) rotate(-6deg);
+  }
+  42% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1.18) rotate(8deg);
+  }
+  68% {
+    opacity: 0.9;
+    transform: translateY(-12px) scale(1.08) rotate(-4deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.8) rotate(0deg);
+  }
+}
+
+.winner-emoji {
+  display: inline-block;
+  animation: winnerFloat 2.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(245, 217, 138, 0.8));
+}

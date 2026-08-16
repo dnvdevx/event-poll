@@ -49,9 +49,10 @@ export default function Home() {
           <img src="/logo.png" alt="Thanima" className="h-14 md:h-20 lg:h-24" />
           <Link
             href="/results"
-            className="text-sm md:text-base bg-[#f5d98a]/10 hover:bg-[#f5d98a]/20 border border-[#f5d98a]/30 px-4 py-2 md:px-6 md:py-3 rounded-full transition text-[#f5d98a]"
+            className="inline-flex items-center gap-2 rounded-full border border-[#f5d98a]/30 bg-[#f5d98a]/10 px-4 py-2 text-sm text-[#f5d98a] transition hover:bg-[#f5d98a]/20 md:text-base"
           >
-            Live Results →
+            <span>Live Results</span>
+            <img src="/right_arrow.png" alt="Live results" className="h-5 w-auto md:h-6" />
           </Link>
         </div>
 

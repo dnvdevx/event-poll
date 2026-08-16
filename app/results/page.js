@@ -1,16 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
 const COLORS = ["#eab676", "#f5d98a", "#c2410c", "#facc15"];
+const TIGER_FRAMES = [
+  "/start.png",
+  "/2nd.png",
+  "/3rd.png",
+  "/4th.png",
+  "/5th.png",
+  "/end.png"
+];
 
 export default function Results() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [eventName, setEventName] = useState("");
+  const [winnerFrame, setWinnerFrame] = useState(0);
 
-  async function load() {
+  const load = useCallback(async () => {
     const res = await fetch("/api/results", { cache: "no-store" });
     const json = await res.json();
     setData(json.active);
@@ -19,24 +28,42 @@ export default function Results() {
     const nameRes = await fetch("/api/event-name", { cache: "no-store" });
     const nameData = await nameRes.json();
     setEventName(nameData.eventName || "");
-  }
-
-  useEffect(() => {
-    load();
-    const interval = setInterval(load, 1500);
-    return () => clearInterval(interval);
   }, []);
 
-return (
+  useEffect(() => {
+    const start = window.setTimeout(() => {
+      void load();
+    }, 0);
+
+    const interval = window.setInterval(() => {
+      void load();
+    }, 1500);
+
+    return () => {
+      window.clearTimeout(start);
+      window.clearInterval(interval);
+    };
+  }, [load]);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setWinnerFrame((current) => (current + 1) % TIGER_FRAMES.length);
+    }, 110);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return (
     <div className="min-h-screen bg-gradient-to-b from-[#3d0a0a] to-[#7a1414] text-white flex flex-col items-center p-6">
       <div className="w-full max-w-3xl px-2">
         <div className="flex justify-between items-center mb-6 mt-4">
           <img src="/logo.png" alt="Thanima" className="h-14 md:h-20 lg:h-24" />
           <Link
             href="/"
-            className="text-sm bg-[#f5d98a]/10 hover:bg-[#f5d98a]/20 border border-[#f5d98a]/30 px-4 py-2 rounded-full transition text-[#f5d98a]"
+            className="inline-flex items-center gap-2 rounded-full border border-[#f5d98a]/30 bg-[#f5d98a]/10 px-4 py-2 text-sm text-[#f5d98a] transition hover:bg-[#f5d98a]/20"
           >
-            ← Back to Vote
+            <span>Back to Vote</span>
+            <img src="/left_arrow.png" alt="Back to vote" className="h-5 w-auto md:h-6" />
           </Link>
         </div>
 
@@ -64,50 +91,101 @@ return (
           </div>
         )}
 
-        {!loading && data && (
-          <div>
-            {data.eventName && (
-              <p className="text-center text-sm uppercase tracking-widest text-gray-400 mb-2">
-                {data.eventName}
-              </p>
-            )}
-            <h2 className="text-2xl md:text-4xl font-semibold mb-2 text-center leading-snug">
-              {data.text}
-            </h2>
-            <p className="text-center text-gray-500 text-sm md:text-base mb-8 md:mb-12">
-              {data.total} vote{data.total !== 1 ? "s" : ""}
-            </p>
+        {!loading && data && (() => {
+          const winnerIndex = data.total > 0
+            ? data.choices.reduce((bestIndex, choice, index) => {
+                if (!choice) return bestIndex;
+                const currentCount = data.counts[index] ?? 0;
+                const bestCount = data.counts[bestIndex] ?? 0;
+                return currentCount > bestCount ? index : bestIndex;
+              }, 0)
+            : -1;
 
-            <div className="flex flex-col gap-5 md:gap-8">
-              {data.choices.map((choice, i) => {
-                if (!choice) return null;
-                const count = data.counts[i];
-                const pct = data.total > 0 ? Math.round((count / data.total) * 100) : 0;
-                return (
-                  <div key={i}>
-                    <div className="flex justify-between mb-1.5 text-sm md:text-lg">
-                      <span className="font-medium">{choice}</span>
-                      <span className="text-gray-400 transition-all duration-300">
-                        {count} · {pct}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-black/20 rounded-full h-8 md:h-12 overflow-hidden border border-white/10">
+          return (
+            <div>
+              {data.eventName && (
+                <p className="text-center text-sm uppercase tracking-widest text-gray-400 mb-2">
+                  {data.eventName}
+                </p>
+              )}
+
+              <h2 className="text-2xl md:text-4xl font-semibold mb-2 text-center leading-snug">
+                {data.text}
+              </h2>
+
+              <p className="text-center text-gray-500 text-sm md:text-base mb-8 md:mb-12">
+                {data.total} vote{data.total !== 1 ? "s" : ""}
+              </p>
+
+              <div className="rounded-[28px] border border-[#f5d98a]/20 bg-[#2a0909]/50 p-4 md:p-6 shadow-[0_20px_40px_rgba(0,0,0,0.22)] backdrop-blur-sm">
+                <div className="flex min-h-[290px] items-end justify-center gap-3 md:gap-5">
+                  {data.choices.map((choice, i) => {
+                    if (!choice) return null;
+
+                    const count = data.counts[i];
+                    const pct = data.total > 0 ? Math.round((count / data.total) * 100) : 0;
+                    const barHeight = Math.max(pct, count > 0 ? 12 : 0);
+                    const isWinner = i === winnerIndex && data.total > 0 && count > 0;
+
+                    return (
                       <div
-                        className="h-full rounded-full flex items-center justify-end pr-3 text-xs md:text-base font-semibold transition-all duration-700 ease-out"
-                        style={{
-                          width: `${pct}%`,
-                          backgroundColor: COLORS[i],
-                        }}
+                        key={i}
+                        className="relative flex flex-1 flex-col items-center justify-end gap-3"
                       >
-                        {pct > 8 && `${pct}%`}
+                        <div className="relative flex h-56 w-full items-end justify-center md:h-64">
+                          {isWinner && (
+                            <div
+                              className="pointer-events-none absolute left-1/2 z-20 flex -translate-x-1/2 items-center justify-center"
+                              style={{ bottom: `calc(${barHeight}% + 24px)` }}
+                            >
+                              <img
+                                src={TIGER_FRAMES[winnerFrame]}
+                                alt="Winner tiger celebration"
+                                className="h-28 w-auto object-contain drop-shadow-[0_0_16px_rgba(245,217,138,0.86)] md:h-32"
+                              />
+                            </div>
+                          )}
+
+                          <div
+                            className="relative flex w-[72%] min-w-[42px] items-start justify-center rounded-t-[18px] border border-[#f5d98a]/20 shadow-[0_10px_26px_rgba(0,0,0,0.2)] transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                            style={{
+                              height: `${barHeight}%`,
+                              background: `linear-gradient(180deg, ${COLORS[i % COLORS.length]} 0%, ${COLORS[i % COLORS.length]}cc 100%)`,
+                              boxShadow: isWinner
+                                ? `0 0 28px ${COLORS[i % COLORS.length]}99, 0 12px 28px rgba(0,0,0,0.2)`
+                                : `0 0 20px ${COLORS[i % COLORS.length]}66`,
+                              transition: 'height 1.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s ease, transform 0.6s ease',
+                              transform: isWinner ? 'translateY(-2px)' : 'translateY(0)',
+                            }}
+                          >
+                            <span className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-full border border-[#f5d98a]/20 bg-[#3d0a0a]/80 px-2 py-1 text-[11px] font-bold text-[#f5d98a] md:text-xs">
+                              {pct}%
+                            </span>
+
+                            {isWinner && (
+                              <span className="absolute -right-2 -top-2 rounded-full border border-[#f5d98a]/30 bg-[#3d0a0a]/90 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[#f5d98a]">
+                                LEAD
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="text-center">
+                          <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f5d98a]/80 md:text-xs">
+                            {count}
+                          </div>
+                          <div className="mt-1 max-w-[110px] text-xs font-medium text-[#f8f1d7] md:text-sm">
+                            {choice}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
+                    );
+                  })}
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
     </div>
   );
