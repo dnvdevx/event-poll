@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@theme {
+  --animate-fade-in: fadeIn 0.4s ease;
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@keyframes winnerFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.72) rotate(0deg);
+  }
+  18% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.04) rotate(-6deg);
+  }
+  42% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1.18) rotate(8deg);
+  }
+  68% {
+    opacity: 0.9;
+    transform: translateY(-12px) scale(1.08) rotate(-4deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.8) rotate(0deg);
+  }
+}
+
+.winner-emoji {
+  display: inline-block;
+  animation: winnerFloat 2.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(245, 217, 138, 0.8));
+}
