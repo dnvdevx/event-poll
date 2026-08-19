@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
-import { ADMIN_PASSWORD } from "@/lib/auth";
 
 export async function POST(req) {
   const { password } = await req.json();
@@ -16,10 +15,10 @@ export async function POST(req) {
     );
   }
 
-  if (password === ADMIN_PASSWORD) {
+  if (password === process.env.ADMIN_PASSWORD) {
     await redis.del(attemptsKey);
     const res = NextResponse.json({ ok: true });
-    res.cookies.set("admin_auth", ADMIN_PASSWORD, {
+    res.cookies.set("admin_auth", process.env.ADMIN_PASSWORD, {
       httpOnly: true,
       path: "/",
       maxAge: 60 * 60 * 8,

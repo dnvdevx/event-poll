@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 
-const MIN_CHOICES = 2;
-const MAX_CHOICES = 8;
+const MIN_CHOICES = 0;
+const MAX_CHOICES = 20;
 
 export default function AdminPage() {
   const [loggedIn, setLoggedIn] = useState(false);
